@@ -1,0 +1,54 @@
+version: '3.9'
+
+services:
+  backend:
+    build: ./backend
+    container_name: fastapi_backend
+    env_file:
+      - ./backend/.env
+    ports:
+      - "${FASTAPI_PORT}:8000"
+    volumes:
+      - ./backend/logs:/app/logs
+    depends_on:
+      - redis
+
+
+  worker:
+    build: ./backend
+    container_name: celery_worker
+    env_file:
+      - ./backend/.env 
+    command: celery -A app.worker.celery_app worker --loglevel=info --concurrency=2 --hostname=worker1@%h
+    volumes:
+      - ./backend/logs:/app/logs
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7
+    container_name: redis_broker
+    env_file:
+      - ./backend/.env
+    ports:
+      - "${REDIS_PORT}:6379"
+
+  flower:
+    image: mher/flower
+    container_name: celery_flower
+    env_file:
+      - ./backend/.env   
+    ports:
+      - "${FLOWER_PORT}:5555"
+    environment:
+      - CELERY_BROKER_URL=${REDIS_URL}
+    depends_on:
+      - redis
+
+  frontend:
+    build: ./frontend
+    container_name: nginx_frontend
+    env_file:
+      - ./frontend/.env      
+    ports:
+      - "${FRONTEND_PORT}:80"

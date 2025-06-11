@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    html, body {
+      @apply bg-[#f7f7f5] text-gray-800;
+    }
+}
+
+/* Design tokens and reusable utilities */
+.card {
+  @apply bg-gray-50 rounded-xl shadow p-6;
+}
+
+.btn {
+  @apply px-4 py-2 font-medium rounded-md transition;
+}
+
+.btn-primary {
+  @apply bg-primary text-white hover:bg-green-900;
+}
+
+.input {
+  @apply border border-gray-300 rounded px-3 py-2 text-sm;
+}
+
+/* Optional additional tokens */
+.text-primary {
+  @apply text-green-800;
+}
+
+.text-dark {
+    @apply text-gray-800;
+  }
